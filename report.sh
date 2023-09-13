@@ -1,6 +1,6 @@
 #!/bin/bash
 
-read -p "node? " id
+if [ -z $1 ]; then read -p "node? " id; else id=$1; fi
 source ~/config/spacemesh.sh $id
 cd $smbase  
 pid=$(ps aux | grep spacemesh | grep $port1 | awk '{print $2}')
