@@ -2,7 +2,7 @@
 
 read -p "node? " id
 source ~/config/spacemesh.sh $id
-  
+cd $smbase  
 pid=$(ps aux | grep spacemesh | grep $port1 | awk '{print $2}')
 network="mainnet"
 version=$(./grpcurl -plaintext localhost:$port2 spacemesh.v1.NodeService.Version | jq .versionString.value | sed 's/"//g')
@@ -36,11 +36,11 @@ if [ "$issmeshing" = "true" ]; then status="ok";note="waiting $poetWait"; else s
 if [ -z $pid ]; then status="error";note="process not running"; fi
 
 echo "updated='$(date +'%y-%m-%d %H:%M')'"
-echo "version='"$version"'"
-echo "process='"$pid"'"
+echo "version='$version'"
+echo "process='$pid'"
 echo "status="$status 
-echo "note='"$note"'"
-echo "network='"$network"'"
+echo "note='$note'"
+echo "network='$network'"
 echo "type="$type
 echo "foldersize="$foldersize
 echo "logsize="$logsize
