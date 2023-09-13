@@ -1,4 +1,4 @@
 #!/bin/bash
 
-read -p "node? " id; fi
+read -p "node? " id
 tail -f ~/logs/spacemesh$id.log
