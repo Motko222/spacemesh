@@ -6,7 +6,7 @@ cd $smbase
 pid=$(ps aux | grep spacemesh | grep $port1 | awk '{print $2}')
 network="mainnet"
 version=$(./grpcurl -plaintext localhost:$port2 spacemesh.v1.NodeService.Version | jq .versionString.value | sed 's/"//g')
-smesherId=0x$(./grpcurl -plaintext localhost:$port3 spacemesh.v1.SmesherService.SmesherID | jq .publicKey | sed 's/"//g' | base64 -d | od -t x1 -An | tr -dc '[:xdigit:]>
+smesherId=0x$(./grpcurl -plaintext localhost:$port3 spacemesh.v1.SmesherService.SmesherID | jq .publicKey | sed 's/"//g' | base64 -d | od -t x1 -An | tr -dc '[:xdigit:]')
 address=$(./grpcurl -plaintext localhost:$port3 spacemesh.v1.SmesherService.Coinbase | jq .accountId.address | sed 's/"//g')
 #network status
 json=$(./grpcurl --plaintext -d "{}" localhost:$port2 spacemesh.v1.NodeService.Status)
@@ -38,11 +38,11 @@ if [ -z $pid ]; then status="error";note="process not running"; fi
 echo "updated='$(date +'%y-%m-%d %H:%M')'"
 echo "version='$version'"
 echo "process='$pid'"
-echo "status="$status 
+echo "status=$status"
 echo "note='$note'"
 echo "network='$network'"
-echo "type="$type
-echo "foldersize="$foldersize
-echo "logsize="$logsize
-echo "postdir="$postdir
-echo "postsize="$postsize
+echo "type=$type"
+echo "foldersize=$foldersize"
+echo "logsize=$logsize"
+echo "postdir=$postdir"
+echo "postsize=$postsize"
