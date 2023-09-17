@@ -1,13 +1,26 @@
 #!/bin/bash
 
-if [ -z $1 ]; then read -p "node? " id; else id=$1; fi
-source ~/config/spacemesh.sh $id
+source ~/scripts/spacemesh/config/env
+
+if [ -z $1 ]
+  then 
+    echo "Running nodes:"
+    ps aux | grep go-spacemesh | grep -v grep | awk 'match($0, /spacemesh[0-9]|spacemesh[0-9][0-9]/) {print substr($0, RSTART, RLENGTH)}' | sed 's/spacemesh//g'
+    echo "------------------------"
+    read -p "Node?  " id
+    echo "------------------------"
+  else 
+    id=$1
+fi
+source ~/scripts/spacemesh/config/node$id
+
 cd $smbase  
 pid=$(ps aux | grep spacemesh | grep $port1 | awk '{print $2}')
 network="mainnet"
 version=$(./grpcurl -plaintext localhost:$port2 spacemesh.v1.NodeService.Version | jq .versionString.value | sed 's/"//g')
 smesherId=0x$(./grpcurl -plaintext localhost:$port3 spacemesh.v1.SmesherService.SmesherID | jq .publicKey | sed 's/"//g' | base64 -d | od -t x1 -An | tr -dc '[:xdigit:]')
 address=$(./grpcurl -plaintext localhost:$port3 spacemesh.v1.SmesherService.Coinbase | jq .accountId.address | sed 's/"//g')
+
 #network status
 json=$(./grpcurl --plaintext -d "{}" localhost:$port2 spacemesh.v1.NodeService.Status)
 peers=$(echo $json | jq .status.connectedPeers | sed 's/"//g')
