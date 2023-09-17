@@ -1,5 +1,6 @@
 #!/bin/bash
 
+source ~/scripts/spacemesh/config/env
 if [ -z $1 ]
   then 
     echo "Configured nodes:"
@@ -12,6 +13,7 @@ if [ -z $1 ]
 fi
 source ~/scripts/spacemesh/config/node$id
 
+cd $smbase
 pid=$(ps aux | grep spacemesh | grep "$port1" | awk '{print $2}')
 kill $pid
 sleep 5s
