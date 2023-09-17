@@ -29,6 +29,7 @@ read -p "Sure?" c
     else
       echo "Config file not found, creating one."
       cp ~/scripts/spacemesh/config/env.sample ~/scripts/spacemesh/config/env
+      cp ~/scripts/spacemesh/config/node.sample ~/scripts/spacemesh/config/node1
   fi
   echo "Done."
  ;;
