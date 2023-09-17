@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source ~/config/spacemesh.sh
+source ~/scripts/spacemesh/config/env
 cd $smbase
 
 read -p "threads? " threads
