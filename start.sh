@@ -1,7 +1,17 @@
 #!/bin/bash
 
-read -p "node? " id
-source ~/config/spacemesh.sh $id
+if [ -z $1 ]
+  then 
+    echo "Configured nodes:"
+    ls ~/scripts/spacemesh/config | grep node | grep -v sample | sed 's/node//g'
+    echo "------------------------"
+    read -p "Node?  " id
+    echo "------------------------"
+  else 
+    id=$1
+fi
+source ~/scripts/spacemesh/config/node$1
+
 pid=$(ps aux | grep spacemesh | grep "$port1" | awk '{print $2}')
 kill $pid
 sleep 5s
