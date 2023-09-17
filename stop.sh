@@ -1,5 +1,6 @@
 #!/bin/bash
 
+source ~/scripts/spacemesh/config/env
 if [ -z $1 ]
   then 
     echo "Running nodes:"
