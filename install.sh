@@ -23,6 +23,13 @@ read -p "Sure?" c
   chmod 777 go-spacemesh profiler
   echo "Deleting zip..."
   rm Linux.zip
+  if [ -f ~/scripts/spacemesh/config/env] 
+    then
+      echo "Config file found."
+    else
+      echo "Config file not found, creating one."
+      cp ~/scripts/spacemesh/config/env.sample ~/scripts/spacemesh/config/env
+  fi
   echo "Done."
  ;;
  esac
