@@ -10,7 +10,7 @@ if [ -z $1 ]
   else 
     id=$1
 fi
-source ~/scripts/spacemesh/config/node$1
+source ~/scripts/spacemesh/config/node$id
 
 pid=$(ps aux | grep spacemesh | grep "$port1" | awk '{print $2}')
 kill $pid
