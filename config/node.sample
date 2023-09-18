@@ -4,4 +4,4 @@ lock="/tmp/spacemesh1.lock"
 port1=7513
 port2=9092
 port3=9093
-port4=9094 
+port4=9094
