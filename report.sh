@@ -43,9 +43,13 @@ logsize=$(du -hs $HOME/logs/spacemesh$id.log | awk '{print $1}')
 type=$postsize
 poetWait=$(cat ~/logs/spacemesh$id.log | grep "waiting till poet round end" | tail -1 | awk '{print $1}')
 
-status="ok";
-if [ "$issynced" = "true" ]; then status="ok" ; else status="warning";note="node not synced"; fi
-if [ "$issmeshing" = "true" ]; then status="ok";note="waiting $poetWait"; else status="warning";note="node not smeshing"; fi
+case $issynced$issmeshing in
+ truetrue)    status="ok";       note="waiting $poetWait" ;;
+ truefalse)   status="warning";  note="node synced, but not smeshing" ;;
+ falsetrue)   status="warning";  note="sync $syncedlayer/$toplayer" ;;
+ falsefalse)  status="warning";  note="sync $syncedlayer/$toplayer, not smeshing" ;;
+esac
+
 if [ -z $pid ]; then status="error";note="process not running"; fi
 
 echo "updated='$(date +'%y-%m-%d %H:%M')'"
