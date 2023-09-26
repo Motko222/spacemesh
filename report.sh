@@ -45,9 +45,9 @@ poetWait=$(cat ~/logs/spacemesh$id.log | grep "waiting till poet round end" | ta
 
 case $issynced$issmeshing in
  truetrue)    status="ok";       note="waiting $poetWait" ;;
- truefalse)   status="warning";  note="node synced, but not smeshing" ;;
- falsetrue)   status="warning";  note="sync $syncedlayer/$toplayer" ;;
- falsefalse)  status="warning";  note="sync $syncedlayer/$toplayer, not smeshing" ;;
+ truenull)   status="warning";  note="node synced, but not smeshing" ;;
+ nulltrue)   status="warning";  note="sync $syncedlayer/$toplayer" ;;
+ nullnull)  status="warning";  note="sync $syncedlayer/$toplayer, not smeshing" ;;
 esac
 
 if [ -z $pid ]; then status="error";note="process not running"; fi
