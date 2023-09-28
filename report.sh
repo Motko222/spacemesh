@@ -44,10 +44,11 @@ type=$postsize
 poetWait=$(cat ~/logs/spacemesh$id.log | grep "waiting till poet round end" | tail -1 | awk '{print $1}')
 
 case $issynced$issmeshing in
- truetrue)    status="ok";       note="waiting $poetWait" ;;
+ truetrue)   status="ok";       note="waiting $poetWait" ;;
  truenull)   status="warning";  note="node synced, but not smeshing" ;;
  nulltrue)   status="warning";  note="sync $syncedlayer/$toplayer" ;;
- nullnull)  status="warning";  note="sync $syncedlayer/$toplayer, not smeshing" ;;
+ nullnull)   status="warning";  note="sync $syncedlayer/$toplayer, not smeshing" ;;
+ *)          status="error";    note="fetch error" ;;
 esac
 
 if [ -z $pid ]; then status="error";note="process not running"; fi
@@ -63,3 +64,5 @@ echo "foldersize=$foldersize"
 echo "logsize=$logsize"
 echo "postdir=$postdir"
 echo "postsize=$postsize"
+echo "issynced=$issynced"
+echo "issmeshing=$issmeshing"
