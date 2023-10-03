@@ -41,7 +41,7 @@ foldersize=$(du -hs $smbase | awk '{print $1}')
 postsize=$(du -hs $postdir | awk '{print $1}')
 logsize=$(du -hs $HOME/logs/spacemesh$id.log | awk '{print $1}')
 type=$postsize
-poetWait=$(cat ~/logs/spacemesh$id.log | grep "waiting till poet round end" | tail -1 | awk '{print substr($0, 5, 11)}')
+poetWait=$(cat ~/logs/spacemesh$id.log | grep "waiting until poet round end" | tail -1 | awk '{print substr($0, 6, 11)}' | sed 's/T/ /')
 
 case $issynced$issmeshing in
  truetrue)   status="ok";       note="waiting $poetWait" ;;
