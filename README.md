@@ -3,4 +3,4 @@
 **INSTALL**
 cd ~/scripts;
 git clone https://github.com/Motko222/spacemesh;
-chmod +x ~/scripts/spacemesh/*.sh;
+chmod +x ~/scripts/spacemesh/*.sh; 
