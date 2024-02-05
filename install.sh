@@ -15,14 +15,16 @@ read -p "Sure?" c
       cd $smbase
   fi
   echo "Get latest release from here: https://github.com/spacemeshos/go-spacemesh/releases"
-  read -p "URL? " url
-  echo "Downloading..."
+  read -p "Release? " release
+  url="https://storage.googleapis.com/go-spacemesh-release-builds/$release/go-spacemesh-$release-linux-amd64.zip"
+  file="go-spacemesh-$release-linux-amd64.zip"
+  echo "Downloading... $url"
   wget $url
-  unzip -j Linux.zip
+  unzip -j $file
   echo "Setting permissions..."
   chmod 777 go-spacemesh profiler
-  echo "Deleting zip..."
-  rm Linux.zip
+  echo "Deleting $file..."
+  rm $file
   if [ -f ~/scripts/spacemesh/config/env ] 
     then
       echo "Config file found."
