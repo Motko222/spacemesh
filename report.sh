@@ -64,12 +64,12 @@ cat << EOF
   "pid":"$pid",
   "status":"$status",
   "message":"$message",
-  "foldersize":$foldersize,
-  "logsize":$logsize,
-  "postdir":$postdir,
-  "postsize":$postsize,
-  "synced":$synced,
-  "smeshing":$smeshing,
+  "foldersize":"$foldersize",
+  "logsize":"$logsize",
+  "postdir":"$postdir",
+  "postsize":"$postsize",
+  "synced":"$synced",
+  "smeshing":"$smeshing",
   "updated":"$(date --utc +%FT%TZ)"
 }
 EOF
