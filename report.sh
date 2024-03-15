@@ -16,7 +16,6 @@ source ~/scripts/spacemesh/config/node$id
 
 cd $smbase  
 pid=$(ps aux | grep spacemesh | grep $port1 | awk '{print $2}')
-network="mainnet"
 version=$(./grpcurl -plaintext localhost:$port2 spacemesh.v1.NodeService.Version | jq .versionString.value | sed 's/"//g')
 smesherId=0x$(./grpcurl -plaintext localhost:$port3 spacemesh.v1.SmesherService.SmesherID | jq .publicKey | sed 's/"//g' | base64 -d | od -t x1 -An | tr -dc '[:xdigit:]')
 address=$(./grpcurl -plaintext localhost:$port3 spacemesh.v1.SmesherService.Coinbase | jq .accountId.address | sed 's/"//g')
@@ -27,10 +26,10 @@ peers=$(echo $json | jq .status.connectedPeers | sed 's/"//g')
 syncedlayer=$(echo $json | jq .status.syncedLayer.number | sed 's/"//g')
 toplayer=$(echo $json | jq .status.topLayer.number | sed 's/"//g')
 verifiedlayer=$(echo $json | jq .status.verifiedLayer.number | sed 's/"//g')
-issynced=$(echo $json | jq .status.isSynced | sed 's/"//g')
+synced=$(echo $json | jq .status.isSynced | sed 's/"//g')
 
 #smesher status
-issmeshing=$(./grpcurl -d '{}' -plaintext localhost:$port3 spacemesh.v1.SmesherService.IsSmeshing | jq .isSmeshing)
+smeshing=$(./grpcurl -d '{}' -plaintext localhost:$port3 spacemesh.v1.SmesherService.IsSmeshing | jq .isSmeshing)
 
 #post status
 json=$(./grpcurl --plaintext -d "{}" localhost:$port3 spacemesh.v1.SmesherService.PostSetupStatus)
@@ -40,29 +39,50 @@ units=$(echo $json | jq .status.opts.numUnits | sed 's/"//g')
 foldersize=$(du -hs $smbase | awk '{print $1}')
 postsize=$(du -hs $postdir | awk '{print $1}')
 logsize=$(du -hs $HOME/logs/spacemesh$id.log | awk '{print $1}')
-type=$postsize
 poetWait=$(cat ~/logs/spacemesh$id.log | grep "waiting until poet round end" | tail -1 | awk '{print substr($0, 6, 11)}' | sed 's/T/ /')
 
-case $issynced$issmeshing in
- truetrue)   status="ok";       note="waiting $poetWait" ;;
- truenull)   status="warning";  note="node synced, but not smeshing" ;;
- nulltrue)   status="warning";  note="sync $syncedlayer/$toplayer" ;;
- nullnull)   status="warning";  note="sync $syncedlayer/$toplayer, not smeshing" ;;
- *)          status="error";    note="fetch error" ;;
+case $synced$smeshing in
+ truetrue)   status="ok";       message="size $postsize | wait $poetWait" ;;
+ truenull)   status="warning";  message="node synced, but not smeshing" ;;
+ nulltrue)   status="warning";  message="sync $syncedlayer/$toplayer" ;;
+ nullnull)   status="warning";  message="sync $syncedlayer/$toplayer, not smeshing" ;;
+ *)          status="error";    message="fetch error" ;;
 esac
 
-if [ -z $pid ]; then status="error";note="process not running"; fi
+if [ -z $pid ]; then status="error";message="process not running"; fi
+bucket=node
+id=spacemesh-$id
+chain="mainnet"
 
-echo "updated='$(date +'%y-%m-%d %H:%M')'"
-echo "version='$version'"
-echo "process='$pid'"
-echo "status=$status"
-echo "note='$note'"
-echo "network='$network'"
-echo "type=$type"
-echo "foldersize=$foldersize"
-echo "logsize=$logsize"
-echo "postdir=$postdir"
-echo "postsize=$postsize"
-echo "issynced=$issynced"
-echo "issmeshing=$issmeshing"
+cat << EOF
+{
+  "id":"$id",
+  "machine":"$MACHINE",
+  "version":"$version",
+  "chain":"$chain",
+  "type":"node",
+  "pid":"$pid",
+  "status":"$status",
+  "message":"$message",
+  "foldersize":$foldersize,
+  "logsize":$logsize,
+  "postdir":$postdir,
+  "postsize":$postsize,
+  "synced":$synced,
+  "smeshing":$smeshing,
+  "updated":"$(date --utc +%FT%TZ)"
+}
+EOF
+
+# send data to influxdb
+if [ ! -z $INFLUX_HOST ]
+then
+ curl --request POST \
+ "$INFLUX_HOST/api/v2/write?org=$INFLUX_ORG&bucket=$bucket&precision=ns" \
+  --header "Authorization: Token $INFLUX_TOKEN" \
+  --header "Content-Type: text/plain; charset=utf-8" \
+  --header "Accept: application/json" \
+  --data-binary "
+    status,node=$id,machine=$MACHINE status=\"$status\",message=\"$message\",version=\"$version\",url=\"$url\",chain=\"$chain\" $(date +%s%N) 
+    "
+fi
