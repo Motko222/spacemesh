@@ -1,9 +1,11 @@
 #!/bin/bash
 
 source ~/scripts/spacemesh/config/env
+source ~/.bash_profile
 
 group=node
 network=mainnet
+chain=mainnet
 
 if [ -z $1 ]
   then 
@@ -53,9 +55,8 @@ case $synced$smeshing in
 esac
 
 if [ -z $pid ]; then status="error";message="process not running"; fi
-bucket=node
+
 id=spacemesh-$id
-chain="mainnet"
 
 cat << EOF
 {
